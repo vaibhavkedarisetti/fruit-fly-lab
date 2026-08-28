@@ -241,12 +241,14 @@ deterministic PRNG and asserts the spike counts are identical for every neuron.
 All three scenarios (deterministic propagation, Poisson looming drive, and
 lesioned) must match exactly before deploying.
 
-```bash
-npx vercel --prod
-```
+Set the Vercel project's **Root Directory to `web`** — that is the whole
+configuration. See [`DEPLOY.md`](DEPLOY.md). If it points anywhere else, every
+route 404s, and running `npx vercel` from inside a subdirectory is the usual
+cause.
 
-`vercel.json` serves `web/` as a static site with immutable caching on the data
-files. Browser requirements: a modern browser with module Web Workers
+```bash
+npx vercel --cwd web --prod
+``` Browser requirements: a modern browser with module Web Workers
 (Chrome/Edge 91+, Firefox 114+, Safari 15+), about 200 MB of tab memory, and the
 one-time connectome download.
 
@@ -353,6 +355,7 @@ fruit-fly-lab/
 ├── tools/                       web export, shared PRNG, cross-engine verifier
 ├── experiments/                 01 looming escape, 02 controls, 03 touch & feeding
 ├── tests/                       74 tests
+├── DEPLOY.md
 ├── DATA_SOURCES.md
 └── BIOLOGICAL_ASSUMPTIONS.md
 ```
