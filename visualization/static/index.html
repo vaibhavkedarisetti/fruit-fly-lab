@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fruit Fly Laboratory — FlyWire FAFB v783</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="dot" id="live-dot"></span>
+    <strong>Fruit&nbsp;Fly&nbsp;Laboratory</strong>
+    <span class="sub" id="dataset-label">loading connectome…</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><label>sim time</label><b id="s-time">0.0 ms</b></div>
+    <div class="stat"><label>active neurons</label><b id="s-active">0</b></div>
+    <div class="stat"><label>total spikes</label><b id="s-spikes">0</b></div>
+    <div class="stat"><label>speed vs real</label><b id="s-rt">—</b></div>
+  </div>
+  <div class="transport">
+    <button id="btn-play" class="primary">▶ Run</button>
+    <button id="btn-pause">⏸ Pause</button>
+    <button id="btn-reset">⟲ Reset</button>
+    <button id="btn-prov" class="ghost">Provenance</button>
+  </div>
+</header>
+
+<main>
+  <!-- ── LEFT: stimulus controls ─────────────────────────────────────── -->
+  <aside class="panel left">
+    <h2>Stimuli</h2>
+    <p class="hint">Each stimulus drives <em>real</em> FlyWire sensory neurons.
+       Nothing here tells the fly what to do.</p>
+
+    <div class="hero">
+      <button id="btn-rock" class="rock">🪨 THROW ROCK</button>
+      <div class="row">
+        <label>from</label>
+        <select id="rock-side">
+          <option value="45">right (+45°)</option>
+          <option value="-45">left (−45°)</option>
+          <option value="0">front (0°)</option>
+          <option value="90">far right (+90°)</option>
+          <option value="-90">far left (−90°)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>speed <b id="rock-speed-v">250</b> mm/s</label>
+        <input type="range" id="rock-speed" min="60" max="600" step="10" value="250">
+      </div>
+      <div class="row">
+        <label>size <b id="rock-size-v">5</b> mm</label>
+        <input type="range" id="rock-size" min="1" max="20" step="1" value="5">
+      </div>
+    </div>
+
+    <div class="hero">
+      <button id="btn-food" class="food">🍎 PLACE FOOD</button>
+      <p class="hint tight">Drives food odour (266 ORNs), tarsal contact
+        chemosensation (71 GRNs) and proboscis sugar (23 GRNs) together —
+        what a fly meets when food is put in front of it.</p>
+    </div>
+
+    <div id="modality-list"></div>
+
+    <h2>Lesion</h2>
+    <p class="hint">Silence a real population (removes its output, as in
+       Shiu&nbsp;et&nbsp;al.) and repeat the experiment.</p>
+    <div id="lesion-list" class="lesions"></div>
+    <button id="btn-clear" class="ghost wide">Clear all stimuli</button>
+  </aside>
+
+  <!-- ── CENTRE: arena + brain ───────────────────────────────────────── -->
+  <section class="centre">
+    <div class="card arena-card">
+      <div class="card-head">
+        <h3>Arena</h3>
+        <span class="behaviour" id="behaviour">resting</span>
+      </div>
+      <canvas id="arena"></canvas>
+      <div class="replay-bar" id="replay-bar">
+        <button id="btn-replay" class="ghost">⟲ Replay experiment</button>
+        <input type="range" id="replay-scrub" min="0" max="0" value="0" disabled>
+        <span class="replay-t" id="replay-t">live</span>
+        <button id="btn-live" class="ghost" hidden>● Back to live</button>
+      </div>
+      <div class="arena-foot">
+        <span id="stim-info">no stimulus</span>
+        <span id="body-info"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Brain <span class="muted" id="brain-count"></span></h3>
+        <div class="tabs">
+          <button class="tab active" data-view="3d">3D neurons</button>
+          <button class="tab" data-view="raster">Spike raster</button>
+        </div>
+      </div>
+      <canvas id="brain"></canvas>
+      <div class="arena-foot">
+        <span id="brain-legend"></span>
+        <span class="muted">drag to rotate · scroll to zoom</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RIGHT: neural telemetry ─────────────────────────────────────── -->
+  <aside class="panel right">
+    <h2>Motor output</h2>
+    <p class="hint">Descending neurons are the brain's only output. Leg and wing
+       motor neurons live in the ventral nerve cord and are
+       <em>not in this dataset</em>.</p>
+    <div id="channels"></div>
+
+    <h2>Descending neurons</h2>
+    <div id="dn-rates" class="dnlist"></div>
+
+    <h2>Brain regions</h2>
+    <div id="regions" class="regions"></div>
+
+    <h2>Circuit inspector</h2>
+    <div class="row">
+      <input id="circuit-q" placeholder="cell type, e.g. DNp01" value="DNp01">
+      <button id="circuit-go">Look up</button>
+    </div>
+    <div id="circuit"></div>
+  </aside>
+</main>
+
+<div class="modal" id="prov-modal" hidden>
+  <div class="modal-body">
+    <button class="close" id="prov-close">✕</button>
+    <h2>Data provenance</h2>
+    <div id="prov-content">loading…</div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "dataset": "FlyWire FAFB",
+  "version": "783",
+  "source_url": "https://codex.flywire.ai/api/download",
+  "source_dir": "D:\\Fruitfly\\FlyWire Brain Dataset (FAFB v783)",
+  "built_utc": "2026-08-28T12:43:09.193300+00:00",
+  "n_neurons": 139255,
+  "n_neuron_pairs": 3732460,
+  "n_synapses": 50666648,
+  "n_edge_rows_in_source": 5342446,
+  "excitatory_neurons": 96514,
+  "inhibitory_neurons": 41115,
+  "unknown_sign_neurons": 1626,
+  "nt_blank_in_source": 19658,
+  "nt_sign_convention": {
+    "excitatory": [
+      "ACH",
+      "DA",
+      "OCT",
+      "SER"
+    ],
+    "inhibitory": [
+      "GABA",
+      "GLUT"
+    ]
+  },
+  "connectivity_file": "connections_princeton.csv.gz",
+  "model_reference": "Shiu et al. 2024, Nature 634:210-219, doi:10.1038/s41586-024-07763-9"
+}

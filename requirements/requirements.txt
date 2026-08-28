@@ -1,0 +1,14 @@
+# Fruit Fly Laboratory -- runtime dependencies
+# Python 3.11 or newer (developed and tested on 3.13.14)
+
+numpy>=1.26
+scipy>=1.11
+pandas>=2.1
+
+# interactive laboratory (web UI)
+fastapi>=0.110
+uvicorn>=0.25
+websockets>=12.0
+
+# tests
+pytest>=8.0

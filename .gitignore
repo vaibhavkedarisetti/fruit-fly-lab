@@ -1,0 +1,30 @@
+# ---- Never commit the raw FlyWire release -------------------------------
+# The v783 download is ~17 GB and is redistributed under CC BY-NC-SA by
+# FlyWire, not by this repository. See DATA_SOURCES.md for how to obtain it.
+FlyWire Brain Dataset*/
+Brain and Nerve Cord*/
+data/flywire/
+data/annotations/
+
+# ---- Python -------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# ---- Local build / editor ----------------------------------------------
+.vercel
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ---- Derived build artefacts -------------------------------------------
+# Regenerated in ~2 minutes by:
+#   python -m brain.connectivity.build_connectome
+# The same connectome is committed in web/data/ for the browser build, so
+# keeping this too would ship the identical graph twice.
+data/derived/
+simulation/outputs/

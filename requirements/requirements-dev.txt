@@ -1,0 +1,5 @@
+# Optional: verification against the original Brian2 reference implementation.
+# Not required to run the laboratory. Brian2 needs a C++ toolchain for its
+# code-generation backend.
+-r requirements.txt
+brian2>=2.5
