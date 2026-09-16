@@ -90,7 +90,15 @@ def test_single_synapse_psp_amplitude(c):
 
 
 # ------------------------------------------------------------ literal reference
-def _literal_reference(conn, exc_idx, rate_hz, duration_ms, seed, params=DEFAULT):
+def _literal_reference(
+    conn,
+    exc_idx,
+    rate_hz,
+    duration_ms,
+    seed,
+    params=DEFAULT,
+    initial_rfc=None,
+):
     """
     Naive, slow, literal transcription of the Brian2 model in
     https://github.com/philshiu/Drosophila_brain_model/blob/main/model.py
@@ -114,6 +122,14 @@ def _literal_reference(conn, exc_idx, rate_hz, duration_ms, seed, params=DEFAULT
     ring = np.zeros((D + 1, n), dtype=np.float64)
     rfc_len = np.full(n, R, dtype=np.int64)
     rfc_len[exc_idx] = 0
+
+    if initial_rfc is not None:
+        initial_rfc = np.asarray(initial_rfc, dtype=np.int64)
+        if initial_rfc.shape != (n,):
+            raise ValueError(
+                f"initial_rfc must have shape {(n,)}, got {initial_rfc.shape}"
+            )
+        rfc[:] = initial_rfc
 
     a, b = 1.0 / p.t_mbr, 1.0 / p.tau
     ev, eg = np.exp(-a * p.dt), np.exp(-b * p.dt)
@@ -165,6 +181,58 @@ def test_matches_literal_reference_implementation(c):
     for s, (r, gspk) in enumerate(zip(ref, got)):
         assert np.array_equal(r, gspk), "spike mismatch at step %d: %s vs %s" % (s, r, gspk)
     assert sum(len(x) for x in ref) > 0, "reference produced no spikes; test is vacuous"
+
+
+def test_refractory_target_with_poisson_kick_matches_reference(c):
+    """
+    H5 regression probe.
+
+    A Poisson-driven neuron is deliberately placed in a non-zero refractory
+    state before the Poisson kick. The published/literal reference blocks the
+    spike while refractory. The current optimized engine has no refractory
+    guard in threshold detection, so this test is expected to FAIL on the
+    unfixed engine.
+
+    This test must fail before the engine fix. A failure here is evidence of the
+    latent threshold/refractory divergence described in the stability spec.
+    """
+    small = c.subgraph(np.arange(50))
+    target = 0
+    exc = np.array([target], dtype=np.int64)
+
+    # Make the Poisson event deterministic: p = rate * dt * 1e-3 = 1.
+    rate_hz = 10000.0
+
+    # Put the target into a refractory state before the first step.
+    initial_rfc = np.zeros(small.n, dtype=np.int64)
+    initial_rfc[target] = DEFAULT.refractory_steps
+
+    ref = _literal_reference(
+        small,
+        exc,
+        rate_hz,
+        duration_ms=DEFAULT.dt,
+        seed=0,
+        initial_rfc=initial_rfc,
+    )
+
+    eng = LIFEngine(small, seed=0, dtype=np.float64)
+    eng.set_poisson(exc, rate_hz)
+
+    # set_poisson() intentionally clears rfc_len for driven neurons.
+    # Restore a non-zero refractory period for this targeted H5 probe.
+    eng.rfc_len[target] = DEFAULT.refractory_steps
+    eng.rfc_left[target] = DEFAULT.refractory_steps
+    eng._n_refractory = 1
+
+    got = eng.run(DEFAULT.dt)
+
+    # Reference: refractory target must NOT spike.
+    assert len(ref) == len(got)
+    assert np.array_equal(
+        ref[0],
+        got[0],
+    ), f"refractory Poisson spike mismatch: reference={ref[0]}, engine={got[0]}"
 
 
 # ----------------------------------------------------------------- behaviour
