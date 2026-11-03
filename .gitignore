@@ -12,6 +12,7 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+.brian2-venv/
 *.egg-info/
 
 # ---- Local build / editor ----------------------------------------------

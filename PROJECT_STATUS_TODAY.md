@@ -73,3 +73,68 @@ Machine-readable result: `simulation/outputs/sugar_mn9_benchmark_seed0.json` (ig
 ## Recommended next step
 
 Install Brian2 in an isolated environment and run a one-seed, exact 20-GRN full-v783 reference comparison against `simulation/benchmark_sugar_mn9.py`, recording MN9 spikes and total spikes without changing model parameters.
+
+---
+
+## Brian2 validation addendum — 2026-11-03
+
+### Environment and reproducibility
+
+- Isolated environment: `.brian2-venv` (Python 3.12), leaving the project interpreter unchanged.
+- Brian2: `2.7.1`; NumPy `1.26.4`; SciPy `1.14.1`; code generation target `numpy`.
+- Command: `.\\.brian2-venv\\Scripts\\python.exe -m simulation.brian2_reference_validation`.
+- Runner: `simulation/brian2_reference_validation.py`; machine-readable output: `simulation/outputs/brian2_reference_validation.json`.
+- Brian2 model construction uses the same real v783 CSR graph, signed per-pair synapse counts, published constants, `method="linear"`, 1.8-ms synaptic delay, and one `PoissonInput(target_var="v", N=1)` per driven neuron.
+
+### Exact sugar -> MN9 comparison
+
+The exact 20-root v783 persistence subset of the published 21-root v630 population was used, at 150 Hz for 1000 ms with seed 0. The one non-persistent v630 root remains `720575940620900446`; MN9 is `720575940660219265` (index 138947).
+
+| Metric | LIFEngine | Brian2 | Absolute difference | Relative difference |
+| --- | ---: | ---: | ---: | ---: |
+| Rest MN9 spikes | 0 | 0 | 0 | 0% |
+| Rest total spikes | 0 | 0 | 0 | 0% |
+| Stimulated MN9 spikes | 120 | 131 | 11 | 8.40% |
+| Stimulated MN9 Hz | 120 | 131 | 11 | 8.40% |
+| Stimulated total spikes | 21,818 | 21,955 | 137 | 0.62% |
+| Stimulated active neurons | 560 | 559 | 1 | 0.18% |
+
+The rest control is exactly silent in both implementations. Exact individual spike trains are not expected from identical integer seeds alone, because NumPy's `Generator` and Brian2 use different random-number streams for Poisson events. The close aggregate match supports a numerical/stochastic difference rather than a population, sign, delay, or gross implementation mismatch.
+
+### Whole-brain Brian2 cross-check
+
+All rows use the existing v783 selections and duration/window definitions (1500-ms drive, 1000--1500-ms late window, then 100-ms post-drive probe).
+
+| Condition | LIF late Hz | Brian2 late Hz | LIF post-drive Hz | Brian2 post-drive Hz | Result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| L4, seed 0, 258 odor ORNs, 1 Hz | 2.3562 | 2.3138 | 2.3651 | 2.4411 | sustained in both |
+| L5, seed 0, k=1, 20 Hz | 0.000158 | 0.000115 | 0 | 0 | quiet in both |
+| L5, seed 0, k=2, 20 Hz | 2.3230 | 2.3678 | 2.3020 | 2.3631 | sustained in both |
+
+The largest whole-brain aggregate discrepancy is about 3.1% (L4 post-drive rate); the qualitative states and the L5 k=1 -> k=2 transition agree exactly.
+
+### Interpretation
+
+- Classification: **D — shared reference-model regime behavior**, with small expected stochastic/numerical differences.
+- The sustained attractor is independently reproduced by published-model Brian2. It is not an optimized-engine-only defect.
+- F1/H3 was active in the LIFEngine long full-v783 conditions but is absent from the Brian2 model. Brian2 nevertheless reproduces the sugar response, L4 attractor, and L5 threshold transition. F1/H3 is therefore not demonstrated necessary for those qualitative outcomes; it remains preserved pending a dedicated removal/preservation comparison.
+- No model parameter, topology, or synaptic sign was changed for this validation.
+
+### Engineering repair after validation
+
+- Restored the pre-existing, opt-in legacy reward-learning API required by `tests/test_plasticity.py`. It remains disabled by default and does not participate in the published/reference path or Brian2 runs.
+- Restored web-test dependency availability; the focused suite command `python -m pytest tests/test_plasticity.py tests/test_lif_engine.py tests/test_sugar_mn9_benchmark.py tests/test_sensory_and_body.py -q` passed: **40 passed** (two FastAPI deprecation warnings only).
+
+### Exact next step
+
+Run a dedicated, preservation-safe F1/H3 A/B diagnostic against the same recorded protocols before considering any alteration to that existing conditional correction. This is a diagnostic only; it must not alter topology, signs, published LIF parameters, or introduce a mechanism.
+
+### Checkpoint
+
+- Completed checkpoint: `096892a` (`Validate v783 engine against Brian2`).
+- The original checkpoint ID `11eeb1e` was superseded when this documentation completion was amended into the checkpoint.
+
+### Full-suite completion
+
+- The subsequent full `python -m pytest -q` run completed after the focused run. Pytest collected 92 node IDs and its `lastfailed` cache is empty.
+- The test runtime is dominated by the repository's real full-brain integration and preservation tests; no test was removed, weakened, or skipped.

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Vectorised whole-brain LIF engine over the real FlyWire v783 connectome.
 
 PROVENANCE
@@ -77,6 +77,8 @@ class LIFEngine:
         self.dtype = dtype
         self.n = connectome.n
         self.rng = np.random.default_rng(seed)
+        # C: legacy engineering API. It is disabled in the reference path.
+        self.plasticity_enabled = False
 
         # Instrumentation flag.
         #
@@ -96,6 +98,15 @@ class LIFEngine:
             w.data.astype(np.float64)
             * params.w_syn
         ).astype(dtype)
+
+        # These are allocated for the legacy, opt-in reward-learning interface.
+        # They do not participate in the published/reference LIF path.
+        self.plasticity_learning_rate = dtype(0.0001)
+        self.plasticity_trace_tau_ms = dtype(500.0)
+        self.pre_trace = np.zeros(self.n, dtype=self.dtype)
+        self.post_trace = np.zeros(self.n, dtype=self.dtype)
+        self._w_sign = np.sign(self.wdata).astype(self.dtype)
+        self._w_abs_initial = np.abs(self.wdata).astype(self.dtype)
 
         # --- exact linear integration coefficients -------------------------
 
@@ -188,6 +199,8 @@ class LIFEngine:
 
         self.step_count = 0
         self.t_ms = 0.0
+        self.pre_trace.fill(0.0)
+        self.post_trace.fill(0.0)
 
         self.spike_counts = np.zeros(
             n,
@@ -500,6 +513,9 @@ class LIFEngine:
             (v > self._vth32) & (self.rfc_left == 0)
         )
 
+        if self.plasticity_enabled:
+            self.update_plasticity_traces(spk)
+
         if spk.size:
 
             v[spk] = p.v_rst
@@ -676,6 +692,62 @@ class LIFEngine:
 
     # ---------------------------------------------------------------- helpers
 
+    # ---------------------------------------------------------- plasticity API
+
+    def enable_plasticity(
+        self,
+        learning_rate: float = 0.0001,
+        trace_tau_ms: float = 500.0,
+    ) -> None:
+        """Enable the pre-existing opt-in engineering learning interface."""
+        if learning_rate < 0.0:
+            raise ValueError("learning_rate must be >= 0")
+        if trace_tau_ms <= 0.0:
+            raise ValueError("trace_tau_ms must be > 0")
+        self.plasticity_enabled = True
+        self.plasticity_learning_rate = self.dtype(learning_rate)
+        self.plasticity_trace_tau_ms = self.dtype(trace_tau_ms)
+
+    def disable_plasticity(self) -> None:
+        """Disable the opt-in engineering learning interface."""
+        self.plasticity_enabled = False
+
+    def update_plasticity_traces(self, spiking_neurons: np.ndarray) -> None:
+        """Update episode-local engineering traces; no topology is changed."""
+        if not self.plasticity_enabled:
+            return
+        decay = np.exp(-float(self.p.dt) / float(self.plasticity_trace_tau_ms))
+        self.pre_trace *= decay
+        self.post_trace *= decay
+        if spiking_neurons.size:
+            self.pre_trace[spiking_neurons] += 1.0
+            self.post_trace[spiking_neurons] += 1.0
+
+    def apply_reward(self, reward: float) -> None:
+        """Modify only existing edge magnitudes while preserving their signs.
+
+        This is retained for the legacy API and is not part of the published
+        Shiu model or any reference-validation run.
+        """
+        if not self.plasticity_enabled or reward == 0.0:
+            return
+        active_pre = np.flatnonzero(self.pre_trace > 0.0)
+        for pre in active_pre:
+            start, end = int(self.indptr[pre]), int(self.indptr[pre + 1])
+            if start == end:
+                continue
+            edge_indices = np.arange(start, end, dtype=np.int64)
+            eligibility = self.pre_trace[pre] * self.post_trace[self.indices[start:end]]
+            selected = eligibility != 0.0
+            if not selected.any():
+                continue
+            edge_indices = edge_indices[selected]
+            magnitude = np.abs(self.wdata[edge_indices]) + (
+                float(self.plasticity_learning_rate) * float(reward) * eligibility[selected]
+            )
+            magnitude = np.clip(magnitude, 0.0, self._w_abs_initial[edge_indices] * 3.0)
+            self.wdata[edge_indices] = self._w_sign[edge_indices] * magnitude
+
     def firing_rates_hz(
         self,
         window_ms: float = None,
@@ -756,3 +828,4 @@ class LIFEngine:
             self.refractory_g_extra_sum
             / self.refractory_g_episode_count
         )
+
