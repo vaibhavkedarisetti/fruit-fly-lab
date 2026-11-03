@@ -138,3 +138,39 @@ Run a dedicated, preservation-safe F1/H3 A/B diagnostic against the same recorde
 
 - The subsequent full `python -m pytest -q` run completed after the focused run. Pytest collected 92 node IDs and its `lastfailed` cache is empty.
 - The test runtime is dominated by the repository's real full-brain integration and preservation tests; no test was removed, weakened, or skipped.
+
+## F1/H3 preservation A/B diagnostic — 2026-11-03
+
+Ran `python -m simulation.f1_h3_ab_diagnostic` with the same v783 populations,
+durations, rates, and seed 0 used for the Brian2 validation. The diagnostic
+constructs two fresh engines per condition and, only for the in-memory control
+arm, clears the already-calculated F1/H3 gate. It changes no source behavior,
+published parameter, topology, synaptic sign, or mechanism. The machine-readable
+result is the ignored artifact `simulation/outputs/f1_h3_ab_diagnostic.json`.
+
+| condition / metric | F1/H3 on | F1/H3 off | on minus off |
+| --- | ---: | ---: | ---: |
+| sugar -> MN9 spikes / Hz | 120 / 120 | 186 / 186 | -66 / -66 |
+| sugar total spikes | 21,818 | 28,566 | -6,748 (-23.6%) |
+| sugar active neurons | 560 | 624 | -64 (-10.3%) |
+| L4 late brain rate | 2.356 Hz | 4.114 Hz | -1.758 Hz (-42.7%) |
+| L4 post-drive rate | 2.365 Hz | 4.124 Hz | -1.759 Hz (-42.6%) |
+| L5 k=1 post-drive rate | 0 Hz | 0 Hz | 0 Hz |
+| L5 k=2 late brain rate | 2.323 Hz | 4.117 Hz | -1.794 Hz (-43.6%) |
+| L5 k=2 post-drive rate | 2.302 Hz | 4.101 Hz | -1.799 Hz (-43.9%) |
+
+Interpretation: F1/H3 is consequential in the currently installed engine: it
+suppresses rather than removes the shared reference-model attractor, while
+preserving the L5 k=1 quiet / k=2 sustained transition. It is an engineering
+correction absent from the published Brian2 reference, not evidence that the
+published model itself is stable. Do not remove or alter it without explicit
+approval and a separate scientific decision.
+
+Reference-alignment consequence: compared with the Brian2 validation above,
+the F1/H3-on engine is the matching arm (sugar MN9 120 versus Brian2 131;
+L4 late rate 2.356 versus 2.314 Hz; L5 k=2 late rate 2.323 versus 2.368 Hz).
+The off arm is substantially farther away (186 MN9 spikes, 4.114 Hz L4, and
+4.117 Hz L5 k=2). Thus the prior statement that F1/H3 was not demonstrated
+necessary applies only to the coarse qualitative outcomes; this A/B result
+demonstrates it is necessary for the optimized engine's close quantitative
+agreement with the Brian2 reference under these protocols.
