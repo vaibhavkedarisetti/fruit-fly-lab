@@ -101,6 +101,8 @@ The validation results, exact protocols, and interpretation are preserved in
 - [Reviewer outreach draft](docs/REVIEWER_OUTREACH.md): a ready-to-personalize
   request for scientific feedback. It is a draft only; no reviewers are
   contacted automatically.
+- [v0.1.0 release notes](docs/RELEASE_NOTES_v0.1.0.md): validated first-public
+  release summary.
 
 ## Scientific scope and limitations
 
