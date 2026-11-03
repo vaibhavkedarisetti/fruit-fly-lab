@@ -92,6 +92,16 @@ py -3.12 -m venv .brian2-venv
 The validation results, exact protocols, and interpretation are preserved in
 [PROJECT_STATUS_TODAY.md](PROJECT_STATUS_TODAY.md).
 
+## Tutorials and validation report
+
+- [Guided notebooks](notebooks/README.md): looming escape, exact sugar→MN9,
+  and lesion controls.
+- [Technical validation report](docs/TECHNICAL_VALIDATION_REPORT.md): exact
+  Brian2 comparison, whole-brain cross-check, and refractory microprobe.
+- [Reviewer outreach draft](docs/REVIEWER_OUTREACH.md): a ready-to-personalize
+  request for scientific feedback. It is a draft only; no reviewers are
+  contacted automatically.
+
 ## Scientific scope and limitations
 
 The simulation uses real connectivity and a published point-neuron model, but
