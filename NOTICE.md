@@ -8,8 +8,8 @@ download. Users obtain it independently through the
 
 The browser deployment assets in `web/data/` are derived from FlyWire FAFB
 v783 connectivity and metadata so that the static browser laboratory can run.
-Those assets, and any regenerated connectome-derived output, are **not**
-licensed by this repository's MIT `LICENSE`. They remain subject to the
+Those assets, and any regenerated connectome-derived output, are not covered by
+any code licence asserted in this local derivative. They remain subject to the
 FlyWire data licence, **CC BY-NC-SA 4.0**, and its attribution/citation terms.
 
 Anyone redistributing or using those assets must review the current FlyWire
@@ -27,3 +27,12 @@ The LIF equations and parameterization implement the published Shiu et al.
 whole-brain model. Cite Shiu et al. (2024), *Nature* 634, 210–219,
 doi: [10.1038/s41586-024-07763-9](https://doi.org/10.1038/s41586-024-07763-9),
 when publishing work that uses the model.
+
+## Code provenance and licence status
+
+This working tree descends from the public
+[`vaibhavkedarisetti/fruit-fly-lab`](https://github.com/vaibhavkedarisetti/fruit-fly-lab)
+repository. Its upstream `main` history was checked on 2026-11-03 and contains
+no `LICENSE`, `COPYING`, or `NOTICE` file. This repository therefore does not
+claim an MIT or other replacement licence over upstream code. See
+[UPSTREAM_ATTRIBUTION_AND_LICENSING.md](UPSTREAM_ATTRIBUTION_AND_LICENSING.md).

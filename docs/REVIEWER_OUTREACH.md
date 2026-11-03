@@ -22,7 +22,7 @@ readout mapping / the validation protocol / a specific circuit]. I am not
 asking you to endorse its biological claims; I am specifically seeking critique
 of documented assumptions and reproducibility.
 
-Repository: https://github.com/vaibhavkedarisetti/fruit-fly-lab
+Repository: [insert the authorised repository URL after licensing is resolved]
 
 Key reading: `docs/TECHNICAL_VALIDATION_REPORT.md` and
 `BIOLOGICAL_ASSUMPTIONS.md`.

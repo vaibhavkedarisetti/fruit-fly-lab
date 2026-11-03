@@ -33,8 +33,11 @@ slower because it uses the full 139,255-neuron graph.
 
 ## Data and scientific scope
 
-- The code is MIT-licensed. FlyWire-derived assets and any regenerated data
-  retain their own CC BY-NC-SA 4.0 terms; see [NOTICE.md](../NOTICE.md).
+- This local derivative does not assert a new code licence because the upstream
+  public repository did not include one. See
+  [UPSTREAM_ATTRIBUTION_AND_LICENSING.md](../UPSTREAM_ATTRIBUTION_AND_LICENSING.md).
+  FlyWire-derived assets and regenerated data retain their own CC BY-NC-SA 4.0
+  terms; see [NOTICE.md](../NOTICE.md).
 - This is not a complete digital fly or proof of cognition/consciousness.
 - See [BIOLOGICAL_ASSUMPTIONS.md](../BIOLOGICAL_ASSUMPTIONS.md) and
   [TECHNICAL_VALIDATION_REPORT.md](TECHNICAL_VALIDATION_REPORT.md) before

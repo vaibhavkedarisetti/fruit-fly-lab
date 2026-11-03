@@ -1,7 +1,5 @@
 # Fruit Fly Laboratory
 
-[![Fast checks](https://github.com/vaibhavkedarisetti/fruit-fly-lab/actions/workflows/fast-checks.yml/badge.svg)](https://github.com/vaibhavkedarisetti/fruit-fly-lab/actions/workflows/fast-checks.yml)
-
 An interactive, connectome-grounded simulation of an adult female
 *Drosophila melanogaster* brain. It runs the published Shiu et al. 2024
 leaky-integrate-and-fire (LIF) model over the real FlyWire FAFB v783 graph:
@@ -116,20 +114,27 @@ The current L4/L5 sustained-drive regime is independently reproduced by the
 Brian2 reference implementation. It is therefore a shared reference-model
 regime, not evidence of a FlyWire-topology or optimized-engine defect.
 
-## Data, citation, and licence
+## Data, attribution, and licence status
 
-- Code in this repository is licensed under the [MIT License](LICENSE).
+- This local working tree is a derivative of the public
+  [`vaibhavkedarisetti/fruit-fly-lab`](https://github.com/vaibhavkedarisetti/fruit-fly-lab)
+  repository. The upstream history contains no code licence. Therefore this
+  repository does **not** assert a new open-source licence for upstream code.
+  Do not publish or redistribute it as a newly MIT-licensed project without
+  permission from the upstream copyright holder. See
+  [UPSTREAM_ATTRIBUTION_AND_LICENSING.md](UPSTREAM_ATTRIBUTION_AND_LICENSING.md).
 - Raw FlyWire source data are **not** included. The committed browser assets
   under `web/data/` are FlyWire-derived and retain the separate CC BY-NC-SA 4.0
-  terms. Do not treat the MIT licence as applying to FlyWire data or derivative
-  data products; see [NOTICE.md](NOTICE.md).
+  terms. See [NOTICE.md](NOTICE.md).
 - Cite FlyWire (Dorkenwald et al. 2024; Schlegel et al. 2024) and Shiu et al.
   2024 when publishing work based on this repository. Details are in
   [CITATION.cff](CITATION.cff) and [DATA_SOURCES.md](DATA_SOURCES.md).
 
 ## Contributing
 
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
+Before contributing or publishing a fork, read
+[UPSTREAM_ATTRIBUTION_AND_LICENSING.md](UPSTREAM_ATTRIBUTION_AND_LICENSING.md).
+For development guidance, start with [CONTRIBUTING.md](CONTRIBUTING.md).
 Changes to FlyWire topology, synaptic signs, published LIF parameters, or
 biological mechanisms require explicit scientific evidence and review.
 
