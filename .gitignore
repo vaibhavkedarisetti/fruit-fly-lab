@@ -4,6 +4,7 @@
 FlyWire Brain Dataset*/
 Brain and Nerve Cord*/
 data/flywire/
+data/flywire_v783/
 data/annotations/
 
 # ---- Python -------------------------------------------------------------
@@ -29,3 +30,57 @@ Thumbs.db
 # keeping this too would ship the identical graph twice.
 data/derived/
 simulation/outputs/
+
+# ---- Local research scratch work (not release artefacts) -----------------
+# These files document exploratory work on a developer machine. They are not
+# reviewed, reproducible release inputs, or part of the supported API.
+/F1_context_repair_apply.py
+/F1_context_repair_revert.py
+/F1_context_repair_v1/
+/F3_candidate_v4_single_file.py
+/F4_spike_adaptation_single_file.py
+/F5_synaptic_depression_single_file.py
+/README_F1*.md
+/apply_f1_h3_candidate*.py
+/apply_f3_candidate*.py
+/revert_f1_h3_candidate*.py
+/revert_f3_candidate*.py
+/verify_f1_context_repair.py
+/verify_f3_candidate*.py
+/fix_plasticity_api*.py
+/fix_plasticity_api*.ps1
+/apply_housekeeping.ps1
+/run_all_diagnostics*.ps1
+/run_brian2_refractory_g_probe.py
+/run_directional_steering_validation.py
+/run_f1_context_retest.ps1
+/run_l1b_h2_h3.py
+/run_l2_sigma_rest.py
+/run_l7_float32_float64.py
+/simulation/diagnostics/
+/simulation/environment/run_l5_ignition.py
+/simulation/environment/run_stability_diagnostic.py
+/simulation/engine/*.bak
+/simulation/engine/*.f1_bak
+/simulation/engine/*.f1ctx_bak
+/simulation/engine/*.f3_bak
+/simulation/engine/*.f4_bak
+/simulation/engine/*.f5_bak
+/simulation/engine/*.pre_f1_backup
+/diagnostic_runs/
+/directional_steering_validation/
+/results/
+/tests/data/
+/tests/test_lif_engine_instrumentation.py
+/tests/test_preservation.py
+/test_bilateral_odor.py
+/test_four_motor_commands.py
+/capture_preservation_golden.py
+/debug_single_spike_propagation.py
+/independent_brian2_crosscheck.py
+/*_diagnostic.csv
+/crosscheck_smoke.csv
+/independent_brian2_l5_crosscheck.csv
+/phase3*.csv
+/stability_*.csv
+/steering_gain_sweep.csv

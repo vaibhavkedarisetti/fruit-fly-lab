@@ -1,0 +1,24 @@
+name: Fast checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  fast-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install runtime dependencies
+        run: python -m pip install -r requirements/requirements.txt
+      - name: Compile supported modules
+        run: python -m compileall -q brain simulation fly visualization experiments
+      - name: Run data-independent LIF regressions
+        run: >-
+          python -m pytest -q
+          tests/test_lif_engine.py::test_parameters_match_published_values
+          tests/test_lif_engine.py::test_exact_integration_matches_numerical_solution
+          tests/test_lif_engine.py::test_f1_h3_discards_arrival_to_refractory_target
