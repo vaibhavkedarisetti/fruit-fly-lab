@@ -174,3 +174,15 @@ The off arm is substantially farther away (186 MN9 spikes, 4.114 Hz L4, and
 necessary applies only to the coarse qualitative outcomes; this A/B result
 demonstrates it is necessary for the optimized engine's close quantitative
 agreement with the Brian2 reference under these protocols.
+
+### Deterministic refractory-arrival microprobe
+
+Ran `.\\.brian2-venv\\Scripts\\python.exe -m simulation.brian2_refractory_microprobe`.
+The probe forces a target spike and then delivers a 3 mV synaptic event while
+that target is refractory. A non-refractory Brian2 delivery control retained
+nonzero conductance, confirming the event was delivered. Brian2 2.7.1 retained
+**0 mV** for the refractory target; the LIFEngine retained 3 mV with F1/H3 off
+and 0 mV with F1/H3 on. This isolates the correction from stochastic
+whole-brain effects and confirms the on-arm as the Brian2-compatible behavior.
+`tests/test_lif_engine.py::test_f1_h3_discards_arrival_to_refractory_target` is
+the fast regression for it.

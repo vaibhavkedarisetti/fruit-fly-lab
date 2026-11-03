@@ -24,9 +24,10 @@ than approximating it. With a = 1/t_mbr and b = 1/tau, over one step dt:
 `tests/test_lif_engine.py` verifies this against a high-resolution numerical
 reference and, when Brian2 is installed, against Brian2 itself.
 
-Refractoriness follows Brian2's `(unless refractory)` semantics: during the
-refractory period v and g are not integrated, but incoming synaptic events
-still accumulate into g.
+Refractoriness follows Brian2's `(unless refractory)` semantics. The normal
+path holds v and g during refractoriness. For the documented full-v783 context,
+the F1/H3 gate additionally reproduces Brian2's observed handling of a
+synaptic event delivered to a refractory target: it is not retained in g.
 
 Spike propagation is event-driven: only the CSR rows of neurons that actually
 spiked are touched, so cost scales with spike count, not with the 3.7M edges.
@@ -429,7 +430,7 @@ class LIFEngine:
 
         g += pending
 
-        # F1 H3 candidate:
+        # F1/H3 reference-alignment correction:
         # When active, refractory neurons do not retain newly-arriving
         # synaptic conductance during the refractory interval.
         if self._f1_h3_active and self._n_refractory:
@@ -650,7 +651,7 @@ class LIFEngine:
         return spk
 
     def set_run_duration(self, duration_ms: float) -> None:
-        """Set the requested trial duration used by conditional F1/H3 behavior.
+        """Set the requested trial duration used by the conditional F1/H3 correction.
 
         The L4/L5 diagnostics advance the engine with step() rather than run(),
         so the candidate cannot be keyed only from LIFEngine.run(). This context
@@ -674,7 +675,7 @@ class LIFEngine:
 
     def run(self, duration_ms: float):
         """Run for a duration. Returns a list of per-step spike index arrays."""
-        # F1 H3 candidate gate: full v783, >=500 ms, non-empty
+        # F1/H3 correction gate: full v783, >=500 ms, non-empty
         # connected-driven set. All other runs keep the baseline path.
         # F1 H3 context repair v1: run() and manual-step harnesses share the same gate.
         self.set_run_duration(duration_ms)

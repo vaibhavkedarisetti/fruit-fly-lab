@@ -8,8 +8,11 @@ subnetwork. If the optimisations ever change the biology, that test fails.
 """
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
+import scipy.sparse as sp
 
 from brain.neuron_models.lif import LIFParams, DEFAULT
 from brain.neurons.registry import load_connectome
@@ -233,6 +236,29 @@ def test_refractory_target_with_poisson_kick_matches_reference(c):
         ref[0],
         got[0],
     ), f"refractory Poisson spike mismatch: reference={ref[0]}, engine={got[0]}"
+
+
+def test_f1_h3_discards_arrival_to_refractory_target():
+    """Regression for the deterministic Brian2 refractory-arrival microprobe.
+
+    ``simulation.brian2_refractory_microprobe`` confirms that Brian2 2.7.1
+    leaves g at zero when a 3 mV synaptic event arrives after the target spikes
+    and while its refractory period is active. The conditional F1/H3 path must
+    preserve that result; the legacy path is deliberately shown as the control.
+    """
+    conn = SimpleNamespace(n=2, w=sp.csr_matrix((2, 2), dtype=np.float64))
+
+    def run(f1_h3_active):
+        eng = LIFEngine(conn, dtype=np.float64)
+        eng.v[0] = -44.0  # deterministic initial spike
+        assert np.array_equal(eng.step(), np.array([0]))
+        eng._f1_h3_active = f1_h3_active
+        eng._ring[eng._slot, 0] = 3.0
+        assert eng.step().size == 0
+        return float(eng.g[0])
+
+    assert run(True) == pytest.approx(0.0)
+    assert run(False) == pytest.approx(3.0)
 
 
 # ----------------------------------------------------------------- behaviour
