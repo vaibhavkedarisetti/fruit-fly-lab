@@ -1,5 +1,7 @@
 # Fruit Fly Laboratory
 
+An interactive exploration of fruit fly neuroscience using FlyWire-related data. Trace how sensory signals may connect to motor responses, investigate neural pathways, and make complex circuits easier to explore through software and visualization.
+
 An interactive, connectome-grounded simulation of an adult female
 *Drosophila melanogaster* brain. It runs the published Shiu et al. 2024
 leaky-integrate-and-fire (LIF) model over the real FlyWire FAFB v783 graph:
