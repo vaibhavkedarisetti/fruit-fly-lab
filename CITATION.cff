@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use Fruit Fly Laboratory, please cite the software, FlyWire data, and Shiu et al. 2024."
+title: "Fruit Fly Laboratory"
+type: software
+authors:
+  - family-names: Kedarisetti
+    given-names: Vaibhav
+version: "0.1.0"
+date-released: "2026-11-03"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Shiu
+      given-names: P. K.
+  title: "A leaky integrate-and-fire computational model based on the connectome of the entire adult Drosophila brain reveals insights into sensorimotor processing"
+  journal: Nature
+  volume: "634"
+  pages: "210-219"
+  year: 2024
+  doi: 10.1038/s41586-024-07763-9

@@ -19,7 +19,7 @@ SHA-256 of every file the pipeline reads.
 | **Neurons** | **139,255** (verified — matches the published count exactly) |
 | **Connections** | 5,342,446 (pre, post, neuropil) rows → **3,732,460** unique neuron pairs |
 | **Synapses** | **50,666,648** |
-| **Local path** | `D:\Fruitfly\FlyWire Brain Dataset (FAFB v783)` |
+| **Local path** | Set locally with `FLYWIRE_V783_DIR` (the raw download is not committed) |
 | **Date downloaded** | 2026-08-25 |
 | **Date verified in this project** | 2026-08-28 |
 
@@ -155,7 +155,7 @@ unknown sign             1,626
 |---|---|
 | **Dataset** | BANC — Brain And Nerve Cord connectome |
 | **Version** | `888` |
-| **Local path** | `D:\Fruitfly\Brain and Nerve Cord (BANC v888)` |
+| **Local path** | Local-only BANC v888 download (not committed or loaded by this project) |
 | **Files** | `neurons.csv.gz` (2,881,728 B), `connections_princeton.csv.gz` (29,164,674 B) |
 | **Date downloaded** | 2026-08-25 |
 | **Status** | **Not loaded by any code in this project.** |
